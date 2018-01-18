@@ -1,4 +1,4 @@
-# Measuring the rate of expansion of female morbidity across 28 Countries of the European Union 1995-2015: a reproducible Bayesian data analysis
+# Preliminary evidence of an increasing rate of expansion of female disability across the European Union, 1995–2015: policy implications and challenges for the Health Programme post-2020. A reproducible research
 # Stefano Olgiati-1*, Michele Gragnolati-2, Ankur Kalra-3, Alessandro Danovi-1
 # 1 Dept. of Economics, Management and Quantitative Methods / University of Bergamo, Bergamo, Italy
 # 2 Health, Nutrition and Population Global Practice / World Bank, Washington DC, USA
@@ -25,29 +25,62 @@ source("DBDA2E-utilities.R")
 #===============================================================================
 
 data <- read.csv("TidyData.csv")
+attach(data)
 
 #===============================================================================
 # INPUT AREA
 
-year <- 2015
-
-# OUTPUT AREA
-
-title <- paste("Rate of expansion of female morbidity across the EU -- Year", year)
-title
-point <- if(year == 2015) point = 16 else point=1
-point
-x_Name <- if(year == 2015) x_Name = "HALE.F.15" else x_Name = "HALE.F.95"
-x_Name
-
-y_Name <- if(year == 2015) y_Name = "YLD.F.15" else y_Name = "YLD.F.95"
-y_Name
+year <- 2015  # 1995 or 2015
+sex <- "male"    # male or female
 
 ID <- NULL
 xpoint <- NULL
 ypoint <- NULL
 
 imageCompressionFormat = c("tiff")
+
+# OUTPUT AREA
+
+if(year == 1995 & sex == "male") {
+        title = paste("Rate of expansion of", sex, "disability across the EU -- Year", year)
+        x_Name = "HALE.M.95"
+        y_Name = "YLD.M.95"
+        point = 1
+        color = "blue"
+} else if(year == 1995 & sex == "female") {
+        title = paste("Rate of expansion of", sex, "disability across the EU -- Year", year)
+        x_Name = "HALE.F.95"
+        y_Name = "YLD.F.95"
+        point = 1
+        color = "red"
+} else if(year == 2015 & sex == "male") {
+        title = paste("Rate of expansion of", sex, "disability across the EU -- Year", year)
+        x_Name = "HALE.M.15"
+        y_Name = "YLD.M.15"
+        point = 16
+        color = "blue"
+} else if(year == 2015 & sex == "female") {
+        title = paste("Rate of expansion of", sex, "disability across the EU -- Year", year)
+        x_Name = "HALE.F.15"
+        y_Name = "YLD.F.15"
+        point = 16
+        color = "red"
+} else {NULL}
+
+#===============================================================================
+
+# CHECK OUTPUT
+year
+sex
+title
+x_Name
+y_Name
+point
+color
+
+ID
+xpoint
+ypoint
 
 #===============================================================================
 # FUNCTION 1/3: DATA, MODEL, INITIALIZE AND RUN THE CHAINS
@@ -283,7 +316,7 @@ plotMCMC = function( codaSamples , data , xName=x_Name, yName=y_Name,
   yLimMult = 0.45
   xLim= c( min(x)-xLimMult*xRang , max(x)+xLimMult*xRang+.1)
   yLim= c( min(y)-yLimMult*yRang , max(y)+yLimMult*yRang )
-  plot( x , y , cex=1 , lwd=2 , col="black" , xlim=xLim , ylim=yLim ,
+  plot( x , y , cex=1 , lwd=2 , col=color , xlim=xLim , ylim=yLim ,
         xlab="Health-Adjusted Life Expectancy (HALE)" , 
         ylab="Number of Years Lived with Disease (YLD)" , 
         cex.lab=1,
@@ -328,7 +361,7 @@ plotMCMC = function( codaSamples , data , xName=x_Name, yName=y_Name,
   
  
   # replot the data, in case they are obscured by lines:
-  points( x , y , cex=1, pch=point)
+  points( x , y , cex=1, pch=point, col=color)
   # add ID in red + label:
   # points(xpoint, ypoint, col="red", cex=1.5, pch=22, lty = "solid", lwd = 2)
   # text(xpoint, ypoint, labels=ID, cex= 0.7, pos=4)
@@ -383,10 +416,13 @@ plotMCMC = function( codaSamples , data , xName=x_Name, yName=y_Name,
       }
     }
     # replot the data, in case they are obscured by lines:
-    points( x , y , cex=1, pch=point)
+    points( x , y , cex=1, pch=point, col=color)
     if ( !is.null(saveName) ) {
-      saveGraph( file=paste(saveName,"-- PostPredYint",sep=""), type=saveType)
+      saveGraph( file=paste(saveName,"-- PostPredInt",sep=""), type=saveType)
     }
   }
 }
+
+#-----------------------------------------------------------------------------
+
 

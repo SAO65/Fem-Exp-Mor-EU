@@ -1,4 +1,4 @@
-# Measuring the rate of expansion of female morbidity across 28 Countries of the European Union 1995-2015: a reproducible Bayesian data analysis
+# Preliminary evidence of an increasing rate of expansion of female disability across the European Union, 1995–2015: policy implications and challenges for the Health Programme post-2020. A reproducible research
 # Stefano Olgiati-1*, Michele Gragnolati-2, Ankur Kalra-3, Alessandro Danovi-1
 # 1 Dept. of Economics, Management and Quantitative Methods / University of Bergamo, Bergamo, Italy
 # 2 Health, Nutrition and Population Global Practice / World Bank, Washington DC, USA
@@ -18,30 +18,12 @@
 # A Tutorial with R, JAGS, and Stan 2nd Edition. Academic Press / Elsevier.
 # Web Open Access: https://sites.google.com/site/doingbayesiandataanalysis/software-installation
 
-
+#===============================================================================
 library(rjags)
-
 #===============================================================================
 source("Jags.R")
-
+source("DBDA2E-utilities.R")
 #===============================================================================
-
-# Validations
-
-validation <- 1995
-year == validation
-title == "Rate of expansion of female morbidity across the EU -- Year 1995"
-x_Name == "HALE.F.95"
-y_Name == "YLD.F.95"
-
-validation <- 2015
-year == validation
-title == "Rate of expansion of female morbidity across the EU -- Year 2015"
-x_Name == "HALE.F.15"
-y_Name == "YLD.F.15"
-
-#===============================================================================
-
 
 # FUNCTION 1/3: DATA, MODEL, INITIALIZE AND RUN THE CHAINS
 codaSamples <- genMCMC(data)
@@ -52,4 +34,7 @@ smryMCMC(codaSamples)
 # FUNCTION 3/3: PLOT
 plotMCMC(codaSamples , data)
 
-#===============================================================================
+# MCMC DIAGNOSTICS
+diagMCMC(codaObject = codaSamples, parName = "beta1", saveName = title)
+
+
